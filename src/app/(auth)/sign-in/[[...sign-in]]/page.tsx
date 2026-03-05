@@ -1,8 +1,9 @@
-import { SignIn } from '@clerk/clerk-react';
+
+import { SignIn } from '@clerk/nextjs';
 import React from 'react'
 
 const SignInPage = () => {
-  return <main className='flex h-screen w-full items-center justify-center'>
+  return <main className='flex h-screen w-full items-center justify-center'>    
     <SignIn/>
 </main>
   
