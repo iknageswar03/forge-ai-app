@@ -9,58 +9,35 @@ import {
   Clock,
   AppleIcon,
   ShieldIcon,
+  ZapIcon,
+  ArrowRight,
 } from "lucide-react";
 import { USER_PROGRAMS } from "@/constants/constants";
 
 const UserPrograms = () => {
   return (
-    <div className="w-full pb-24 pt-16 relative">
-      <div className="container mx-auto max-w-6xl px-4">
-        {/* HEADER- PROGRAM GALLERY */}
-        <div className="bg-card/90 backdrop-blur-sm border border-border rounded-lg overflow-hidden mb-16">
-          {/* HEADER BAR */}
-          <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-background/70">
-            <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-primary"></div>
-              <span className="text-sm text-primary font-medium">Program Gallery</span>
+    <div className="w-full pb-32 pt-24 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+      
+      <div className="container mx-auto max-w-7xl px-6">
+        {/* HEADER SECTION */}
+        <div className="relative mb-20">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+                <span className="text-[10px] font-black tracking-widest uppercase text-primary">Protocol Gallery</span>
+              </div>
+              <h2 className="text-4xl md:text-6xl font-black tracking-tight leading-none">
+                AI Synthesis <br />
+                <span className="text-muted-foreground">Recent Success.</span>
+              </h2>
             </div>
-            <div className="text-sm text-muted-foreground">Featured Plans</div>
-          </div>
-
-          {/* HEADER CONTENT */}
-          <div className="p-8 text-center">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              <span className="text-foreground">AI-Generated </span>
-              <span className="text-primary">Programs</span>
-            </h2>
-
-            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10">
-              Explore personalized fitness plans our AI assistant has created for other users
+            
+            <p className="text-lg text-muted-foreground max-w-md leading-relaxed">
+              Real-world results from our advanced fitness architect. Explore 
+              the protocols generated for our elite athletes.
             </p>
-
-            {/* STATS */}
-            <div className="flex items-center justify-center gap-16 mt-10 font-mono">
-              <div className="flex flex-col items-center">
-                <p className="text-3xl text-primary">500+</p>
-                <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
-                  PROGRAMS
-                </p>
-              </div>
-              <div className="w-px h-12 bg-border"></div>
-              <div className="flex flex-col items-center">
-                <p className="text-3xl text-primary">3min</p>
-                <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
-                  CREATION TIME
-                </p>
-              </div>
-              <div className="w-px h-12 bg-border"></div>
-              <div className="flex flex-col items-center">
-                <p className="text-3xl text-primary">100%</p>
-                <p className="text-sm text-muted-foreground uppercase tracking-wide mt-1">
-                  PERSONALIZED
-                </p>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -69,114 +46,85 @@ const UserPrograms = () => {
           {USER_PROGRAMS.map((program) => (
             <Card
               key={program.id}
-              className="bg-card/90 backdrop-blur-sm border border-border hover:border-primary/50 transition-colors overflow-hidden"
+              className="group bg-white/5 backdrop-blur-xl border-white/10 hover:border-primary/50 transition-all duration-500 overflow-hidden rounded-[2rem] flex flex-col h-full"
             >
-              {/* Card header with user info */}
-              <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-background/70">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-primary"></div>
-                  <span className="text-sm text-primary">USER.{program.id}</span>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {program.fitness_level.toUpperCase()}
-                </div>
-              </div>
-
-              <CardHeader className="pt-6 px-5">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="h-16 w-16 rounded-full overflow-hidden border border-border">
-                    <img
-                      src={program.profilePic}
-                      alt={`${program.first_name}`}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <div>
-                    <CardTitle className="text-xl text-foreground">
-                      {program.first_name}
-                      <span className="text-primary">.exe</span>
-                    </CardTitle>
-                    <div className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
-                      <Users className="h-4 w-4" />
-                      {program.age}y • {program.workout_days}d/week
+              <CardHeader className="p-0">
+                {/* User Image & Badge */}
+                <div className="relative h-80 overflow-hidden">
+                  <img
+                    src={program.profilePic}
+                    alt={`${program.first_name}`}
+                    className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                  
+                  <div className="absolute top-4 left-4">
+                    <div className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold tracking-widest uppercase text-white">
+                      {program.fitness_level}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center gap-4">
-                  <div className="px-3 py-1 bg-primary/10 rounded border border-primary/20 text-sm text-primary flex items-center gap-2">
-                    <Sparkles className="h-4 w-4" />
-                    {program.fitness_goal}
-                  </div>
-                  <div className="text-sm text-muted-foreground flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
-                    v3.5
+                <div className="px-6 -mt-12 relative z-10">
+                  <div className="bg-background/90 backdrop-blur-2xl border border-white/10 p-5 rounded-2xl shadow-2xl">
+                    <CardTitle className="text-xl font-black tracking-tight text-foreground flex items-center justify-between">
+                      {program.first_name}
+                      <span className="text-primary text-[10px] font-mono opacity-50">ID:00{program.id}</span>
+                    </CardTitle>
+                    <div className="flex items-center gap-4 mt-2">
+                       <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1">
+                        <Users className="size-3 text-primary" /> {program.age}Y
+                      </div>
+                      <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1">
+                        <Clock className="size-3 text-primary" /> {program.workout_days}D/WK
+                      </div>
+                    </div>
                   </div>
                 </div>
               </CardHeader>
 
-              <CardContent className="px-5">
-                {/* Program details */}
-                <div className="space-y-5 pt-2">
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-md bg-primary/10 text-primary mt-0.5">
-                      <Dumbbell className="h-5 w-5" />
+              <CardContent className="px-6 py-6 flex-grow space-y-6">
+                <div className="flex flex-wrap gap-2">
+                  <div className="px-3 py-1 rounded-lg bg-primary/10 border border-primary/20 text-[10px] font-bold text-primary uppercase tracking-widest flex items-center gap-1.5">
+                    <Sparkles className="size-3" />
+                    {program.fitness_goal}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4 group/item">
+                    <div className="p-2 rounded-xl bg-white/5 border border-white/10 group-hover/item:border-primary/30 transition-colors">
+                      <Dumbbell className="size-5 text-primary" />
                     </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between items-center">
-                        <h3 className="font-medium text-foreground">
-                          {program.workout_plan.title}
-                        </h3>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {program.equipment_access}
-                      </p>
+                    <div>
+                      <h4 className="text-sm font-bold text-foreground leading-none">{program.workout_plan.title}</h4>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">Movement Protocol</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-md bg-secondary/10 text-secondary mt-0.5">
-                      <AppleIcon className="h-5 w-5" />
+                  <div className="flex items-center gap-4 group/item">
+                    <div className="p-2 rounded-xl bg-white/5 border border-white/10 group-hover/item:border-primary/30 transition-colors">
+                      <AppleIcon className="size-5 text-primary" />
                     </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between items-center">
-                        <h3 className="font-medium text-foreground">{program.diet_plan.title}</h3>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        System optimized nutrition
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-md bg-primary/10 text-primary mt-0.5">
-                      <ShieldIcon className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between items-center">
-                        <h3 className="font-medium text-foreground">AI Safety Protocols</h3>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Protection systems enabled
-                      </p>
+                    <div>
+                      <h4 className="text-sm font-bold text-foreground leading-none">{program.diet_plan.title}</h4>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">Nutrition Protocol</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Program description */}
-                <div className="mt-5 pt-5 border-t border-border">
-                  <div className="text-sm text-muted-foreground">
-                    <span className="text-primary">&gt; </span>
-                    {program.workout_plan.description.substring(0, 120)}...
-                  </div>
+                <div className="pt-4 border-t border-white/5">
+                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 italic">
+                    "{program.workout_plan.description}"
+                  </p>
                 </div>
               </CardContent>
 
-              <CardFooter className="px-5 py-4 border-t border-border">
+              <CardFooter className="px-6 pb-6 pt-0">
                 <Link href={`/programs/${program.id}`} className="w-full">
-                  <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                    View Program Details
-                    <ChevronRight className="ml-2 h-4 w-4" />
+                  <Button variant="outline" className="w-full border-white/10 hover:bg-primary hover:text-primary-foreground hover:border-primary rounded-xl font-bold h-12 group/btn transition-all duration-300">
+                    Review Protocol
+                    <ArrowRight className="ml-2 size-4 transition-transform group-hover/btn:translate-x-1" />
                   </Button>
                 </Link>
               </CardFooter>
@@ -184,20 +132,37 @@ const UserPrograms = () => {
           ))}
         </div>
 
-        {/* CTA section */}
-        <div className="mt-16 text-center">
-          <Link href="/generate-program">
-            <Button
-              size="lg"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg"
-            >
-              Generate Your Program
-              <Sparkles className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-          <p className="text-muted-foreground mt-4">
-            Join 500+ users with AI-customized fitness programs
-          </p>
+        {/* CTA SECTION */}
+        <div className="mt-24 relative">
+          <div className="absolute inset-0 bg-primary/5 blur-[100px] rounded-full"></div>
+          <div className="relative bg-background/40 backdrop-blur-2xl border border-white/10 p-12 rounded-[3rem] text-center max-w-4xl mx-auto overflow-hidden">
+            <div className="absolute top-0 right-0 p-8 opacity-10">
+              <ZapIcon className="size-32 text-primary" />
+            </div>
+            
+            <h3 className="text-3xl md:text-5xl font-black tracking-tight mb-6">
+              Ready for your own <br />
+              <span className="text-primary italic">Synthesis?</span>
+            </h3>
+            
+            <p className="text-muted-foreground text-lg mb-10 max-w-xl mx-auto">
+              Join 500+ elite athletes who have transformed their physics 
+              using our advanced AI protocols.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Button
+                size="lg"
+                asChild
+                className="h-16 px-10 text-lg font-bold bg-primary text-primary-foreground hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20 rounded-2xl"
+              >
+                <Link href="/generate-program">
+                  Initialize Program
+                  <Sparkles className="ml-2 size-5" />
+                </Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,8 +1,9 @@
 export const USER_PROGRAMS = [
   {
     id: 1,
-    first_name: "Sarah",
-    profilePic: "https://randomuser.me/api/portraits/men/74.jpg",
+    first_name: "Anand",
+    profilePic:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1887&auto=format&fit=crop",
     fitness_goal: "Weight Loss",
     height: "5'6\"",
     weight: "165 lbs",
@@ -51,8 +52,9 @@ export const USER_PROGRAMS = [
   },
   {
     id: 2,
-    first_name: "Michael",
-    profilePic: "https://randomuser.me/api/portraits/men/75.jpg",
+    first_name: "Vimal",
+    profilePic:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1887&auto=format&fit=crop",
     fitness_goal: "Muscle Gain",
     height: "5'10\"",
     weight: "170 lbs",
@@ -102,8 +104,8 @@ export const USER_PROGRAMS = [
   },
   {
     id: 3,
-    first_name: "Elena",
-    profilePic: "https://randomuser.me/api/portraits/men/76.jpg",
+    first_name: "Shyam",
+    profilePic: "https://randomuser.me/api/portraits/men/75.jpg",
     fitness_goal: "General Fitness",
     height: "5'4\"",
     weight: "130 lbs",

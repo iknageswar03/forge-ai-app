@@ -6,6 +6,7 @@ import { vapi } from "@/lib/vapi";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { Sparkles, Mic2, PhoneOff, Loader2 } from "lucide-react";
 
 const GenerateProgramPage = () => {
   const [callActive, setCallActive] = useState(false);
@@ -147,176 +148,188 @@ const GenerateProgramPage = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen text-foreground overflow-hidden  pb-6 pt-24">
-      <div className="container mx-auto px-4 h-full max-w-5xl">
+    <div className="flex flex-col min-h-screen text-foreground overflow-x-hidden pb-12 pt-32 relative">
+       {/* Background decoration */}
+       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-full pointer-events-none -z-10">
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full"></div>
+       </div>
+
+      <div className="container mx-auto px-6 max-w-6xl">
         {/* Title */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold font-mono">
-            <span>Generate Your </span>
-            <span className="text-primary uppercase">Fitness Program</span>
+        <div className="text-center mb-16 space-y-4 animate-fadeIn">
+           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+            <Sparkles className="size-3 text-primary" />
+            <span className="text-[10px] font-black tracking-widest uppercase text-primary">Neural Protocol Initiation</span>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-none">
+            Forge Your <span className="text-primary italic">Synthesis.</span>
           </h1>
-          <p className="text-muted-foreground mt-2">
-            Have a voice conversation with our AI assistant to create your personalized plan
+          <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
+            Begin a neural-link voice conversation with our AI architect to synthesize 
+            your elite fitness and nutrition protocol.
           </p>
         </div>
 
-        {/* VIDEO CALL AREA */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {/* HUD AREA */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-12 animate-fadeIn" style={{ animationDelay: '0.2s' }}>
           {/* AI ASSISTANT CARD */}
-          <Card className="bg-card/90 backdrop-blur-sm border border-border overflow-hidden relative">
-            <div className="aspect-video flex flex-col items-center justify-center p-6 relative">
+          <Card className={`group relative bg-white/5 backdrop-blur-2xl border-white/10 overflow-hidden rounded-[2.5rem] transition-all duration-500 ${callActive && isSpeaking ? 'border-primary/50 shadow-2xl shadow-primary/10' : ''}`}>
+             {/* Decorative HUD Elements */}
+            <div className="absolute top-6 left-6 w-12 h-12 border-t border-l border-white/10 group-hover:border-primary/30 transition-colors rounded-tl-xl"></div>
+            <div className="absolute top-6 right-6 w-12 h-12 border-t border-r border-white/10 group-hover:border-primary/30 transition-colors rounded-tr-xl"></div>
+            
+            <div className="min-h-[380px] md:aspect-[16/10] flex flex-col items-center justify-center p-6 md:p-12 relative">
               {/* AI VOICE ANIMATION */}
-              <div
-                className={`absolute inset-0 ${
-                  isSpeaking ? "opacity-30" : "opacity-0"
-                } transition-opacity duration-300`}
-              >
-                {/* Voice wave animation when speaking */}
-                <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 flex justify-center items-center h-20">
-                  {[...Array(5)].map((_, i) => (
-                    <div
-                      key={i}
-                      className={`mx-1 h-16 w-1 bg-primary rounded-full ${
-                        isSpeaking ? "animate-sound-wave" : ""
-                      }`}
-                      style={{
-                        animationDelay: `${i * 0.1}s`,
-                        height: isSpeaking ? `${Math.random() * 50 + 20}%` : "5%",
-                      }}
-                    />
-                  ))}
-                </div>
+              <div className="absolute inset-x-0 bottom-16 md:bottom-12 flex justify-center items-center gap-1 md:gap-1.5 h-10 md:h-16 pointer-events-none px-4">
+                {[...Array(20)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`w-0.5 md:w-1 bg-primary/40 rounded-full transition-all duration-300 ${isSpeaking ? 'animate-sound-wave' : 'h-1 opacity-20'}`}
+                    style={{
+                      animationDelay: `${i * 0.05}s`,
+                      height: isSpeaking ? `${Math.sin(i * 0.5) * 40 + 50}%` : '4px',
+                    }}
+                  />
+                ))}
               </div>
 
               {/* AI IMAGE */}
-              <div className="relative size-32 mb-4">
-                <div
-                  className={`absolute inset-0 bg-primary opacity-10 rounded-full blur-lg ${
-                    isSpeaking ? "animate-pulse" : ""
-                  }`}
-                />
-
-                <div className="relative w-full h-full rounded-full bg-card flex items-center justify-center border border-border overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-secondary/10"></div>
-                  <img
-                    src="/ai-avatar.png"
-                    alt="AI Assistant"
-                    className="w-full h-full object-cover"
+              <div className="relative mb-6 md:mb-8 mt-4 md:mt-0">
+                <div className={`absolute inset-0 bg-primary/20 blur-3xl rounded-full transition-all duration-500 ${isSpeaking ? 'scale-150 opacity-40' : 'scale-100 opacity-20'}`}></div>
+                <div className={`relative size-28 md:size-40 rounded-full bg-black/40 border-2 transition-all duration-500 overflow-hidden p-1 ${isSpeaking ? 'border-primary animate-pulse' : 'border-white/10'}`}>
+                   <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent"></div>
+                   <img
+                    src="./ai-avatar2.png"
+                    alt="Forge Neural Link"
+                    className="w-full h-full object-cover rounded-full"
                   />
                 </div>
               </div>
 
-              <h2 className="text-xl font-bold text-foreground">CodeFlex AI</h2>
-              <p className="text-sm text-muted-foreground mt-1">Fitness & Diet Coach</p>
+              <div className="text-center z-10 mb-8 md:mb-0">
+                <h2 className="text-xl md:text-2xl font-black tracking-tight text-foreground">FORGE-X1</h2>
+                <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mt-1">Elite Neural Architect</p>
+              </div>
 
-              {/* SPEAKING INDICATOR */}
-
-              <div
-                className={`mt-4 flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-border ${
-                  isSpeaking ? "border-primary" : ""
-                }`}
-              >
-                <div
-                  className={`w-2 h-2 rounded-full ${
-                    isSpeaking ? "bg-primary animate-pulse" : "bg-muted"
-                  }`}
-                />
-
-                <span className="text-xs text-muted-foreground">
-                  {isSpeaking
-                    ? "Speaking..."
-                    : callActive
-                      ? "Listening..."
-                      : callEnded
-                        ? "Redirecting to profile..."
-                        : "Waiting..."}
-                </span>
+              {/* STATUS INDICATOR */}
+              <div className="absolute bottom-6 right-1/2 translate-x-1/2 md:translate-x-0 md:right-8">
+                 <div className="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-1.5 md:py-2 rounded-xl bg-black/40 border border-white/5 backdrop-blur-md">
+                    <div className={`size-1 md:size-1.5 rounded-full ${callActive ? 'bg-primary animate-pulse shadow-[0_0_8px_rgba(24,206,242,0.8)]' : 'bg-muted'}`}></div>
+                    <span className="text-[8px] md:text-[10px] font-bold text-muted-foreground uppercase tracking-widest whitespace-nowrap">
+                       {callActive ? (isSpeaking ? "Transmitting..." : "Listening...") : "Link Offline"}
+                    </span>
+                 </div>
               </div>
             </div>
           </Card>
 
           {/* USER CARD */}
-          <Card className={`bg-card/90 backdrop-blur-sm border overflow-hidden relative`}>
-            <div className="aspect-video flex flex-col items-center justify-center p-6 relative">
-              {/* User Image */}
-              <div className="relative size-32 mb-4">
-                <img
-                  src={user?.imageUrl}
-                  alt="User"
-                  // ADD THIS "size-full" class to make it rounded on all images
-                  className="size-full object-cover rounded-full"
-                />
+          <Card className="group relative bg-white/5 backdrop-blur-2xl border-white/10 overflow-hidden rounded-[2.5rem] transition-all duration-500">
+             <div className="absolute bottom-6 left-6 w-12 h-12 border-b border-l border-white/10 group-hover:border-primary/30 transition-colors rounded-bl-xl"></div>
+             <div className="absolute bottom-6 right-6 w-12 h-12 border-b border-r border-white/10 group-hover:border-primary/30 transition-colors rounded-tr-xl"></div>
+
+            <div className="min-h-[380px] md:aspect-[16/10] flex flex-col items-center justify-center p-6 md:p-12 relative">
+              <div className="relative mb-6 md:mb-8 mt-4 md:mt-0">
+                <div className="absolute inset-0 bg-white/5 blur-3xl rounded-full"></div>
+                <div className="relative size-28 md:size-40 rounded-full border-2 border-white/10 overflow-hidden p-1">
+                   <img
+                    src={user?.imageUrl}
+                    alt="User"
+                    className="size-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-500"
+                  />
+                </div>
               </div>
 
-              <h2 className="text-xl font-bold text-foreground">You</h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                {user ? (user.firstName + " " + (user.lastName || "")).trim() : "Guest"}
-              </p>
+              <div className="text-center z-10 mb-8 md:mb-0">
+                <h2 className="text-xl md:text-2xl font-black tracking-tight text-foreground">
+                   {user ? (user.firstName + " " + (user.lastName || "")).trim() : "GUEST"}
+                </h2>
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">Elite Athlete Candidate</p>
+              </div>
 
-              {/* User Ready Text */}
-              <div className={`mt-4 flex items-center gap-2 px-3 py-1 rounded-full bg-card border`}>
-                <div className={`w-2 h-2 rounded-full bg-muted`} />
-                <span className="text-xs text-muted-foreground">Ready</span>
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-8">
+                 <div className="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-1.5 md:py-2 rounded-xl bg-black/40 border border-white/5 backdrop-blur-md">
+                    <div className="size-1 md:size-1.5 rounded-full bg-green-500"></div>
+                    <span className="text-[8px] md:text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Candidate Ready</span>
+                 </div>
               </div>
             </div>
           </Card>
         </div>
 
-        {/* MESSAGE COINTER  */}
+        {/* TRANSCRIPT AREA */}
         {messages.length > 0 && (
           <div
             ref={messageContainerRef}
-            className="w-full bg-card/90 backdrop-blur-sm border border-border rounded-xl p-4 mb-8 h-64 overflow-y-auto transition-all duration-300 scroll-smooth"
+            className="w-full bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-8 mb-12 h-80 overflow-y-auto custom-scrollbar animate-fadeIn"
           >
-            <div className="space-y-3">
+            <div className="space-y-6">
               {messages.map((msg, index) => (
-                <div key={index} className="message-item animate-fadeIn">
-                  <div className="font-semibold text-xs text-muted-foreground mb-1">
-                    {msg.role === "assistant" ? "CodeFlex AI" : "You"}:
+                <div key={index} className={`flex flex-col gap-2 ${msg.role === 'assistant' ? 'items-start' : 'items-end'}`}>
+                  <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed max-w-[80%] ${
+                    msg.role === 'assistant' 
+                    ? 'bg-primary/10 border border-primary/20 text-foreground' 
+                    : 'bg-white/5 border border-white/10 text-muted-foreground'
+                  }`}>
+                    <div className="text-[10px] font-black uppercase tracking-widest mb-1 opacity-50">
+                       {msg.role === 'assistant' ? 'Forge-X1' : 'Candidate'}
+                    </div>
+                    {msg.content}
                   </div>
-                  <p className="text-foreground">{msg.content}</p>
                 </div>
               ))}
 
               {callEnded && (
-                <div className="message-item animate-fadeIn">
-                  <div className="font-semibold text-xs text-primary mb-1">System:</div>
-                  <p className="text-foreground">
-                    Your fitness program has been created! Redirecting to your profile...
-                  </p>
+                <div className="flex justify-center">
+                  <div className="px-6 py-4 rounded-2xl bg-green-500/10 border border-green-500/20 text-green-500 text-sm font-bold flex items-center gap-3">
+                    <Loader2 className="size-4 animate-spin" />
+                    Synthesis Complete. Initiating Profile Matrix...
+                  </div>
                 </div>
               )}
             </div>
           </div>
         )}
 
-        {/* CALL CONTROLS */}
-        <div className="w-full flex justify-center gap-4">
+        {/* CONTROLS */}
+        <div className="w-full flex flex-col items-center gap-6 animate-fadeIn" style={{ animationDelay: '0.4s' }}>
           <Button
-            className={`w-40 text-xl rounded-3xl ${
+            size="lg"
+            className={`h-20 px-12 rounded-[2rem] text-xl font-black transition-all duration-500 hover:scale-105 active:scale-95 shadow-2xl ${
               callActive
-                ? "bg-destructive hover:bg-destructive/90"
+                ? "bg-destructive text-destructive-foreground hover:bg-destructive shadow-destructive/20"
                 : callEnded
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-primary hover:bg-primary/90"
-            } text-white relative`}
+                  ? "bg-green-600 text-white shadow-green-500/20"
+                  : "bg-primary text-primary-foreground shadow-primary/30"
+            }`}
             onClick={toggleCall}
             disabled={connecting || callEnded}
           >
-            {connecting && (
-              <span className="absolute inset-0 rounded-full animate-ping bg-primary/50 opacity-75"></span>
-            )}
-
-            <span>
-              {callActive
-                ? "End Call"
-                : connecting
-                  ? "Connecting..."
-                  : callEnded
-                    ? "View Profile"
-                    : "Start Call"}
-            </span>
+            <div className="flex items-center gap-3 tracking-tight">
+               {connecting ? (
+                 <>
+                   <Loader2 className="size-6 animate-spin" />
+                   <span>CONNECTING...</span>
+                 </>
+               ) : callActive ? (
+                 <>
+                   <PhoneOff className="size-6" />
+                   <span>END CALL</span>
+                 </>
+               ) : callEnded ? (
+                 <span>MATRIX READY</span>
+               ) : (
+                 <>
+                   <Mic2 className="size-6" />
+                   <span>START CALL</span>
+                 </>
+               )}
+            </div>
           </Button>
+          
+          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">
+             Secure Neural Encryption Enabled
+          </p>
         </div>
       </div>
     </div>
