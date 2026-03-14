@@ -151,7 +151,7 @@ const GenerateProgramPage = () => {
     <div className="flex flex-col min-h-screen text-foreground overflow-x-hidden pb-12 pt-32 relative">
        {/* Background decoration */}
        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-full pointer-events-none -z-10">
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full"></div>
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-150 h-150 bg-primary/5 blur-[120px] rounded-full"></div>
        </div>
 
       <div className="container mx-auto px-6 max-w-6xl">
@@ -178,7 +178,7 @@ const GenerateProgramPage = () => {
             <div className="absolute top-6 left-6 w-12 h-12 border-t border-l border-white/10 group-hover:border-primary/30 transition-colors rounded-tl-xl"></div>
             <div className="absolute top-6 right-6 w-12 h-12 border-t border-r border-white/10 group-hover:border-primary/30 transition-colors rounded-tr-xl"></div>
             
-            <div className="min-h-[380px] md:aspect-[16/10] flex flex-col items-center justify-center p-6 md:p-12 relative">
+            <div className="min-h-95 md:aspect-16/10 flex flex-col items-center justify-center p-6 md:p-12 relative">
               {/* AI VOICE ANIMATION */}
               <div className="absolute inset-x-0 bottom-16 md:bottom-12 flex justify-center items-center gap-1 md:gap-1.5 h-10 md:h-16 pointer-events-none px-4">
                 {[...Array(20)].map((_, i) => (
