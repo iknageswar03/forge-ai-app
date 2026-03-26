@@ -123,13 +123,32 @@ http.route({
     handler:httpAction(async(ctx,request)=>{
         try {
           const payload = await request.json();
-          // 1. Extract the arguments from the Vapi tool call
+
+          // 1. Robust UserId Extraction
+          // We check tool arguments first, then various variable storage locations in the Vapi payload
           const args = payload.message?.toolCalls?.[0]?.function?.arguments;
 
-          // 2. Extract the user_id from variableValues (where Vapi stores it)
           const userId =
-            payload.message?.assistant?.variableValues?.user_id ||
-            payload.message?.variableValues?.user_id;
+            args?.serverUserId ||
+            payload.message?.variableValues?.serverUserId ||
+            payload.assistant?.variableValues?.serverUserId;
+
+          // 2. Failure Guard
+          if (!userId || userId === "") {
+            console.error(
+              "Missing userId in payload. Full payload for debugging:",
+              JSON.stringify(payload),
+            );
+            return new Response(
+              JSON.stringify({
+                success: false,
+                error:
+                  "userId is required. Ensure it is passed in vapi.start() variableValues.",
+              }),
+              { status: 400, headers: { "Content-Type": "application/json" } },
+            );
+          }
+
           const {
             age,
             weight,
@@ -140,16 +159,6 @@ http.route({
             fitness_level,
             dietary_restrictions,
           } = args || {};
-
-          if(!userId){
-            console.error("Missing userId in payload structure");
-            return new Response(
-              JSON.stringify({ error: "userId is required" }),
-              { status: 400 },
-            );
-          }
-
-          console.log("payload is here", payload);
 
           // Gemini to generate the workout program based on the user's input
           const model = genAI.getGenerativeModel({

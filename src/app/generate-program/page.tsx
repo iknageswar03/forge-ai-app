@@ -136,7 +136,7 @@ const GenerateProgramPage = () => {
         await vapi.start(process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID!,{
             variableValues: {
               full_name: fullName,
-              user_id: user?.id,
+              serverUserId: user?.id,
             },
       });
 
