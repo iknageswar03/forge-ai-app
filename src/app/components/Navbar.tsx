@@ -1,7 +1,7 @@
 "use client";
 
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
-import { DumbbellIcon, HomeIcon, UserIcon, ZapIcon, MenuIcon, XIcon } from "lucide-react";
+import { DumbbellIcon, HomeIcon, UserIcon, ZapIcon, MenuIcon, XIcon, Timer, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { usePathname } from "next/navigation";
@@ -15,6 +15,8 @@ const Navbar = () => {
   const navLinks = [
     { href: "/", label: "Home", icon: HomeIcon },
     { href: "/generate-program", label: "Generate", icon: DumbbellIcon },
+    { href: "/tracker", label: "Tracker", icon: Timer },
+    { href: "/history", label: "History", icon: Activity },
     { href: "/profile", label: "Profile", icon: UserIcon },
   ];
 

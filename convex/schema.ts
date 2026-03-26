@@ -37,6 +37,41 @@ export default defineSchema({
         isActive:v.boolean(),
     })
     .index("by_userId",["userId"])
-    .index("by_active",["isActive"])
+    .index("by_active",["isActive"]),
+
+    routines: defineTable({
+        userId: v.string(),
+        name: v.string(),
+        exercises: v.array(v.object({
+            name: v.string(),
+            sets: v.optional(v.number()),
+            reps: v.optional(v.number()),
+            duration: v.optional(v.string()),
+            description: v.optional(v.string()),
+            detailedSets: v.optional(v.array(v.object({
+                reps: v.number(),
+                weight: v.string()
+            })))
+        }))
+    }).index("by_userId", ["userId"]),
+    
+    workoutLogs: defineTable({
+        userId: v.string(),
+        routineId: v.optional(v.id("routines")),
+        date: v.string(),
+        duration: v.optional(v.number()),
+        exercises: v.array(v.object({
+            name: v.string(),
+            completedSets: v.array(v.object({
+                reps: v.number(),
+                weight: v.string(),
+                completed: v.boolean(),
+            }))
+        })),
+        notes: v.optional(v.string()),
+        isCompleted: v.boolean(),
+        completedAt: v.optional(v.string())
+    }).index("by_userId", ["userId"])
+      .index("by_routineId", ["routineId"])
 })
 

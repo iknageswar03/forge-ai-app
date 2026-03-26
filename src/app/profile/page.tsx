@@ -1,7 +1,7 @@
 "use client"
 
 import { useUser } from '@clerk/nextjs'
-import { useQuery } from 'convex/react'
+import { useQuery, useMutation } from 'convex/react'
 import React, { useState } from 'react'
 import { api } from '../../../convex/_generated/api'
 import ProfileHeader from '@/components/ui/ProfileHeader'
@@ -17,6 +17,21 @@ const ProfilePage = () => {
   const userId = user?.id as string;
   const allPlans = useQuery(api.plans.getUserPlans, { userId })
   const [selectedPlanId, setSelectedPlanId] = useState<null | string>(null)
+  const saveFromPlan = useMutation(api.routines.saveFromPlan)
+  const [savingDay, setSavingDay] = useState<string | null>(null)
+  const [savedDays, setSavedDays] = useState<string[]>([])
+
+  const handleSaveProtocol = async (planId: string, day: string) => {
+    try {
+      setSavingDay(day);
+      await saveFromPlan({ planId: planId as any, day, userId });
+      setSavingDay(null);
+      setSavedDays((prev) => [...prev, day]);
+    } catch (e) {
+      console.error("Failed to save protocol:", e);
+      setSavingDay(null);
+    }
+  }
 
   const activePlan = allPlans?.find(plan => plan.isActive)
   const currentPlan = selectedPlanId ? allPlans?.find(plan => plan._id === selectedPlanId) : activePlan
@@ -110,7 +125,7 @@ const ProfilePage = () => {
                  text-[10px] sm:text-sm md:text-base min-w-0 !h-full"
     >
       <DumbbellIcon className="size-4 md:size-5 shrink-0" />
-      <span className="truncate">Workout Architecture</span>
+      <span className="truncate">Workout Protocol</span>
     </TabsTrigger>
 
     <TabsTrigger
@@ -141,14 +156,56 @@ const ProfilePage = () => {
                             value={exerciseDay.day}
                             className="border border-white/10 rounded-2xl overflow-hidden bg-white/5 hover:bg-white/10 transition-colors px-4 border-b-0"
                           >
-                            <AccordionTrigger className="hover:no-underline py-6 font-black group/acc">
-                              <div className="flex justify-between w-full items-center pr-4">
-                                <span className="text-xl tracking-tight group-hover/acc:text-primary transition-colors">{exerciseDay.day}</span>
-                                <div className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase bg-black/30 px-3 py-1 rounded-full border border-white/5">
-                                  {exerciseDay.routines.length} Modules
-                                </div>
-                              </div>
-                            </AccordionTrigger>
+                            <AccordionTrigger className="hover:no-underline py-5 md:py-6 font-black group/acc text-left">
+  <div className="flex flex-col md:flex-row justify-start md:justify-between w-full items-start md:items-center pl-2 pr-4 gap-4 md:gap-0">
+    <span className="text-lg md:text-xl tracking-tight group-hover/acc:text-primary transition-colors pr-4">
+      {exerciseDay.day}
+    </span>
+    
+    <div className="flex items-center gap-3">
+      {/* Using a <span> styled as a button to avoid the 
+          "Button cannot be a descendant of Button" error.
+      */}
+      <span
+        role="button"
+        tabIndex={0}
+        className={`h-8 px-4 rounded-full border font-bold tracking-widest text-[10px] uppercase transition-all inline-flex items-center justify-center select-none ${
+          savedDays.includes(exerciseDay.day)
+            ? "bg-green-500/10 text-green-400 border-green-500/20 cursor-default"
+            : savingDay === exerciseDay.day 
+              ? "bg-primary/20 text-primary border-primary/40 animate-pulse cursor-wait" 
+              : "bg-primary/10 hover:bg-primary/20 text-primary border-primary/20 active:scale-95 cursor-pointer"
+        }`}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (savingDay !== exerciseDay.day && !savedDays.includes(exerciseDay.day)) {
+            handleSaveProtocol(currentPlan._id, exerciseDay.day);
+          }
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (savingDay !== exerciseDay.day && !savedDays.includes(exerciseDay.day)) {
+              handleSaveProtocol(currentPlan._id, exerciseDay.day);
+            }
+          }
+        }}
+      >
+        {savedDays.includes(exerciseDay.day) ? (
+          <span className="flex items-center gap-2"><CheckCircle2 className="size-3" /> SAVED</span>
+        ) : savingDay === exerciseDay.day ? (
+          "SAVING..."
+        ) : (
+          "SAVE ROUTINE"
+        )}
+      </span>
+
+      <div className="text-[10px] hidden md:block font-bold tracking-widest text-muted-foreground uppercase bg-black/30 px-3 py-1 rounded-full border border-white/5">
+        {exerciseDay.routines.length} Modules
+      </div>
+    </div>
+  </div>
+</AccordionTrigger>
 
                             <AccordionContent className="pb-6">
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">

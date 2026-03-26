@@ -10,7 +10,9 @@
 
 import type * as http from "../http.js";
 import type * as plans from "../plans.js";
+import type * as routines from "../routines.js";
 import type * as users from "../users.js";
+import type * as workoutLogs from "../workoutLogs.js";
 
 import type {
   ApiFromModules,
@@ -21,7 +23,9 @@ import type {
 declare const fullApi: ApiFromModules<{
   http: typeof http;
   plans: typeof plans;
+  routines: typeof routines;
   users: typeof users;
+  workoutLogs: typeof workoutLogs;
 }>;
 
 /**
