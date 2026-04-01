@@ -4,7 +4,6 @@ import { Webhook } from "svix"
 import { api } from "./_generated/api"
 import { httpAction } from "./_generated/server"
 import {GoogleGenerativeAI} from "@google/generative-ai"
-import { json } from "stream/consumers"
 
 
 const http=httpRouter()
@@ -65,7 +64,24 @@ http.route({
             }
         }
 
-        // Handle THE user.updated EVENT LATER
+
+        if(eventType==="user.updated"){
+          const {id,first_name,last_name,image_url,email_addresses}=evt.data;
+          const email=email_addresses[0].email_address ;
+          const name= `${first_name||""} ${last_name || ""}`.trim();
+
+          try {
+            await ctx.runMutation(api.users.updateUser,{
+              clerkId:id,
+              email,
+              name,
+              image:image_url
+            })
+          } catch (error) {
+            console.log("Error updating user:",error);
+            return new Response("Error updating user",{status:500});
+          }
+        }
 
         return new Response("Webhooks processed successfully",{status:200})
     })
@@ -106,31 +122,55 @@ http.route({
     method:"POST",
     handler:httpAction(async(ctx,request)=>{
         try {
-            const payload=await request.json();
+          const payload = await request.json();
 
-            const {
-                user_id,
-                age,
-                weight,
-                height,
-                injuries,
-                workout_days,
-                fitness_goal,
-                fitness_level,
-                dietary_restrictions
-            } =payload;
+          // 1. Robust UserId Extraction
+          // We check tool arguments first, then various variable storage locations in the Vapi payload
+          const args = payload.message?.toolCalls?.[0]?.function?.arguments;
 
-            // Gemini to generate the workout program based on the user's input
-            const model= genAI.getGenerativeModel({
-                model:"gemini-2.5-flash",
-                generationConfig:{
-                    temperature:0.4,
-                    topP:0.9,
-                    responseMimeType:"application/json"
-                },
-            })
+          const userId =
+            args?.serverUserId ||
+            payload.message?.variableValues?.serverUserId ||
+            payload.assistant?.variableValues?.serverUserId;
 
-        const workoutPrompt = `You are an experienced fitness coach creating a personalized workout plan based on:
+          // 2. Failure Guard
+          if (!userId || userId === "") {
+            console.error(
+              "Missing userId in payload. Full payload for debugging:",
+              JSON.stringify(payload),
+            );
+            return new Response(
+              JSON.stringify({
+                success: false,
+                error:
+                  "userId is required. Ensure it is passed in vapi.start() variableValues.",
+              }),
+              { status: 400, headers: { "Content-Type": "application/json" } },
+            );
+          }
+
+          const {
+            age,
+            weight,
+            height,
+            injuries,
+            workout_days,
+            fitness_goal,
+            fitness_level,
+            dietary_restrictions,
+          } = args || {};
+
+          // Gemini to generate the workout program based on the user's input
+          const model = genAI.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            generationConfig: {
+              temperature: 0.4,
+              topP: 0.9,
+              responseMimeType: "application/json",
+            },
+          });
+
+          const workoutPrompt = `You are an experienced fitness coach creating a personalized workout plan based on:
         Age: ${age}
         Height: ${height}
         Weight: ${weight}
@@ -173,15 +213,14 @@ http.route({
         
         DO NOT add any fields that are not in this example. Your response must be a valid JSON object with no additional text.`;
 
-        const workoutResult = await model.generateContent(workoutPrompt);
-        const workoutPlanText=workoutResult.response.text();
+          const workoutResult = await model.generateContent(workoutPrompt);
+          const workoutPlanText = workoutResult.response.text();
 
-        //validate the input coming from ai
-        let workoutPlan=JSON.parse(workoutPlanText);
-        workoutPlan=validateWorkoutPlan(workoutPlan);
-        
+          //validate the input coming from ai
+          let workoutPlan = JSON.parse(workoutPlanText);
+          workoutPlan = validateWorkoutPlan(workoutPlan);
 
-        const dietPrompt = `You are an experienced nutrition coach creating a personalized diet plan based on:
+          const dietPrompt = `You are an experienced nutrition coach creating a personalized diet plan based on:
         Age: ${age}
         Height: ${height}
         Weight: ${weight}
@@ -218,29 +257,49 @@ http.route({
         
         DO NOT add any fields that are not in this example. Your response must be a valid JSON object with no additional text.`;
 
-        const dietResult = await model.generateContent(dietPrompt);
-        const dietPlanText=dietResult.response.text();
+          const dietResult = await model.generateContent(dietPrompt);
+          const dietPlanText = dietResult.response.text();
 
-        //validate the input coming from ai
-        let dietPlan=JSON.parse(dietPlanText);
-        dietPlan=validateDietPlan(dietPlan);
+          //validate the input coming from ai
+          let dietPlan = JSON.parse(dietPlanText);
+          dietPlan = validateDietPlan(dietPlan);
 
-        console.log("Generated workout plan:", workoutPlan);
-        console.log("Generated diet plan:", dietPlan);
-        return new Response(
-          JSON.stringify({
-            message: "Logs printed successfully",
-            received: true,
-          }),
-          {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          },
-        );
+          const planId = await ctx.runMutation(api.plans.createPlan, {
+            userId: userId,
+            dietPlan,
+            isActive: true,
+            workoutPlan,
+            name: `${fitness_goal || "Fitness"} Plan - ${new Date().toLocaleDateString()}`,
+          });
 
+          console.log("Generated workout plan:", workoutPlan);
+          console.log("Generated diet plan:", dietPlan);
+          return new Response(
+            JSON.stringify({
+              success: true,
+              data: {
+                planId,
+                workoutPlan,
+                dietPlan,
+              },
+            }),
+            {
+              status: 200,
+              headers: { "Content-Type": "application/json" },
+            },
+          );
         } catch (error) {
-            console.error("Error generating program:", error);
-            return new Response("Error", { status: 500 });
+              console.error("Error generating program:", error);
+              return new Response(
+                JSON.stringify({
+                  success: false,
+                  error:error instanceof Error ? error.message :String(error),
+                }),
+                {
+                  status: 500,
+                  headers: { "Content-Type": "application/json" },
+                }
+              );
         }
     })
 
